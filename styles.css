@@ -1,0 +1,10 @@
+html, body, #map-canvas {
+    height: 100%;
+    margin: 0px;
+    padding: 0px;
+    line-height: 33px;
+}
+body { background: none; }
+header, footer { display: none; }
+#imageurl { width: 800px; }
+#map-canvas { height: 800px; }

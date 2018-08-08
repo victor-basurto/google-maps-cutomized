@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry"></script>
+	<script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"></script>
+    <script src="map.js"></script>
+</head>
+<body>
+    <div>
+		<p>Map Starting Center:</p>
+		<p>Lat:
+			<input id="centerlat" name="centerlatlng" type="text" value="45.4897880564131" placeholder="Lat/Lng Map Center"> Lng:
+			<input id="centerlng" name="centerlng" type="text" value="-122.894888066568" placeholder="Lat/Lng Map Center">
+		</p>
+		<p>
+			<button id="starteditor">Start</button>
+		</p>
+	</div>
+	<div id="map-canvas"></div>
+</body>
+</html>
