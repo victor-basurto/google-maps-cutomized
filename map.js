@@ -47,68 +47,28 @@ $(function () {
             'https://en.wikipedia.org/w/index.php?title=Uluru</a> '+
             '(last visited June 22, 2009).</p>'+
             '</div>'+
-            '</div>';
+            '</div>'
+        ;
 
-            
-
-            // function executeIdentifyTask(evt) {  
-                
-            //     map.graphics.clear();  
-                  
-            //     //Set the infoWindow to open at the top right of the point at all times  
-            //     map.infoWindow.setFixedAnchor(esri.dijit.InfoWindow.ANCHOR_UPPERRIGHT);  
-                  
-            //     //Determine the upper right, and center, coordinates of the map  
-            //     var maxPoint = new esri.geometry.Point(map.extent.xmax, map.extent.ymax)  
-            //     var centerPoint = new esri.geometry.Point(map.extent.getCenter());  
-                  
-            //     //Convert these to screen coordinates  
-            //     var maxPointScreen = map.toScreen(maxPoint);  
-            //     var centerPointScreen = map.toScreen(centerPoint);  
-                  
-            //     //Subtract the size of the infoWindow, including a buffer.  
-            //     //This will show whether the infoWindow would spill out of the current view.  
-            //     var xDiff = Math.abs(maxPointScreen.x - evt.screenPoint.x) - 435;  
-            //     var yDiff = Math.abs(maxPointScreen.y - evt.screenPoint.y) - 285;  
-                  
-            //     //If required, recalculate a new centerpoint which accounts for the infoWindow  
-            //     if (xDiff < 0) {centerPointScreen.x -= xDiff;}  
-            //     if (yDiff < 0) {centerPointScreen.y += yDiff;}  
-                  
-            //     //Pan the map to the new centerpoint (in Map coordinates)  
-            //     centerPoint = map.toMap(centerPointScreen);  
-            //     map.centerAt(centerPoint);  
-                  
-            //     //Display the infoWindow at the original point clicked  
-            //     map.infoWindow.show(evt.screenPoint, esri.dijit.InfoWindow.ANCHOR_UPPERRIGHT);  
-                
-            // }
-        function getInfowindowOffset(map, markers) {
-            var center = getPixelFromLatLng(map.getCenter()),
-                point = getPixelFromLatLng(markers.getPosition()),
-                quadrant = "",
-                offset;
-            quadrant += (point.y > center.y) ? "b" : "t";
-            quadrant += (point.x < center.x) ? "l" : "r";            
-            if (quadrant == "tr") {
-                offset = new google.maps.Size(-70, 185);
-            } else if (quadrant == "tl") {
-                offset = new google.maps.Size(70, 185);
-            } else if (quadrant == "br") {
-                offset = new google.maps.Size(-70, 20);
-            } else if (quadrant == "bl") {
-                offset = new google.maps.Size(70, 20);
+        function getPosition(element) {
+            console.log(element)
+            console.log(element.anchorPoint)
+            var xPosition = 0;
+            var yPosition = 0;
+        
+            while(element) {
+                xPosition += (element.offsetLeft - element.scrollLeft + element.clientLeft);
+                yPosition += (element.offsetTop - element.scrollTop + element.clientTop);
+                element = element.offsetParent;
             }
-
-            return offset;
-        }
-        function getPixelFromLatLng (latLng) {
-            var projection = map.getProjection();          
-            var point = projection.fromLatLngToPoint(latLng);
-            return point;
+        
+            return { x: xPosition, y: yPosition };
         }
 
-
+        var infoWindowsOptions = {
+            content: contentString,
+            pixelOffset: new google.maps.Size(100,100)
+        }
 
         var markers = [];
         var Lot132020center = new google.maps.LatLng(45.4969911971779, -122.910992406179);
@@ -117,15 +77,11 @@ $(function () {
             map: map,
             title: 'Lot132020'
         });
-        var infowindow = new google.maps.InfoWindow({
-            content: contentString,
-            disableAutoPan: true
-        });
+        var infowindow = new google.maps.InfoWindow( infoWindowsOptions );
 
         markerLot132020.addListener('mouseover', function() {
-            infowindow.setOptions({
-                pixelOffset: getInfowindowOffset( map, markerLot132020 ),
-            });
+            // infowindow.setPosition(markerLot132020.getPosition())
+            console.log(getPosition(markerLot132020))
             infowindow.open(map, markerLot132020)
         });
         markers.push(markerLot132020);
@@ -15138,3 +15094,5 @@ $(function () {
     });
 
 });
+
+
