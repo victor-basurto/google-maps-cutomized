@@ -3,8 +3,17 @@ html, body, #map-canvas {
     margin: 0px;
     padding: 0px;
     line-height: 33px;
+
 }
 body { background: none; }
 header, footer { display: none; }
 #imageurl { width: 800px; }
 #map-canvas { height: 800px; }
+
+#map div div div:last-child div:last-child div div div:nth-child(3) {
+    left: 0 !important;
+    top: 30px !important;
+    border-top-width: 24px;
+    position: absolute;
+    transform: rotate(90deg);
+  }

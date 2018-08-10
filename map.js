@@ -1,4 +1,5 @@
 $(function () {
+    var infoBubble, infoBubble2;
     function initialize() {
         var centerlat = parseFloat($('input#centerlat').val());
         var centerlng = parseFloat($('input#centerlng').val());
@@ -50,26 +51,28 @@ $(function () {
             '</div>'
         ;
 
-        function getPosition(element) {
-            console.log(element)
-            console.log(element.anchorPoint)
-            var xPosition = 0;
-            var yPosition = 0;
-        
-            while(element) {
-                xPosition += (element.offsetLeft - element.scrollLeft + element.clientLeft);
-                yPosition += (element.offsetTop - element.scrollTop + element.clientTop);
-                element = element.offsetParent;
-            }
-        
-            return { x: xPosition, y: yPosition };
-        }
 
-        var infoWindowsOptions = {
-            content: contentString,
-            pixelOffset: new google.maps.Size(100,100)
-        }
+        
 
+
+        function calculateMarker(map, marker) {
+            var scale, nw, worldCoordinate, worldCoordinateNW, pixelOffset;
+
+            scale = Math.pow(2, map.getZoom());
+            nw = new google.maps.LatLng(
+                map.getBounds().getNorthEast().lat(),
+                map.getBounds().getSouthWest().lng()
+            );
+            worldCoordinateNW = map.getProjection().fromLatLngToPoint( nw );
+            worldCoordinate = map.getProjection().fromLatLngToPoint( marker.getPosition() );
+            pixelOffset = new google.maps.Point(
+                Math.floor( (worldCoordinate.x - worldCoordinateNW.x) * scale ),
+                Math.floor( (worldCoordinate.y - worldCoordinateNW.y) * scale )
+            );
+            return pixelOffset;
+        }
+        
+        
         var markers = [];
         var Lot132020center = new google.maps.LatLng(45.4969911971779, -122.910992406179);
         var markerLot132020 = new google.maps.Marker({
@@ -77,13 +80,24 @@ $(function () {
             map: map,
             title: 'Lot132020'
         });
+        var infoWindowsOptions = {
+            content: contentString,
+            disableAutoPan: true, 
+            maxWidth: 200,
+            pixelOffset: calculateMarker(map, markerLot132020)
+        }
         var infowindow = new google.maps.InfoWindow( infoWindowsOptions );
-
+        
+        
         markerLot132020.addListener('mouseover', function() {
             // infowindow.setPosition(markerLot132020.getPosition())
-            console.log(getPosition(markerLot132020))
-            infowindow.open(map, markerLot132020)
+            console.log(markerLot132020.anchorpoint)
+            console.log(calculateMarker(map, markerLot132020));
+            infowindow.open(map, calculateMarker(map, markerLot132020));
         });
+        // markerLot132020.addListener('mouseout', () => {
+        //     infowindow.close(map, markerLot132020);
+        // })
         markers.push(markerLot132020);
         var Lot132020coords0 = [
             { lat: 45.4960026105087, lng: -122.90787883785123 },
@@ -15086,6 +15100,19 @@ $(function () {
         });
         Section132008shape.setMap(map);
         var markerCluster = new MarkerClusterer(map, markers, { imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m' });
+        
+
+
+
+
+
+        // Add temporary infowindow to each marker
+        // markers.forEach( i => {
+        //     i.addListener('mouseover', () => {
+        //         console.log(i)
+        //         infowindow.open(map, i)
+        //     });
+        // });
     }
 
 
