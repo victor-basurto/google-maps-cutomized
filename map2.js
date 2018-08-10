@@ -51,11 +51,14 @@ $(function () {
         `;
 
         function fromLatLngToPoint(latLng, map) {
-            var topRight = map.getProjection().fromLatLngToPoint(map.getBounds().getNorthEast());
-            var bottomLeft = map.getProjection().fromLatLngToPoint(map.getBounds().getSouthWest());
-            var scale = Math.pow(2, map.getZoom());
-            var worldPoint = map.getProjection().fromLatLngToPoint(latLng);
-            return new google.maps.Point(((worldPoint.x - bottomLeft.x) ) * scale, (worldPoint.y - topRight.y) * scale);
+
+            var topRight, bottomLeft, scale, worldPoint;
+
+            topRight = map.getProjection().fromLatLngToPoint( map.getBounds().getNorthEast() );
+            bottomLeft = map.getProjection().fromLatLngToPoint( map.getBounds().getSouthWest() );
+            scale = Math.pow( 2, map.getZoom() );
+            worldPoint = map.getProjection().fromLatLngToPoint( latLng );
+            return new google.maps.Point(( (worldPoint.x - bottomLeft.x) ) * scale, ( worldPoint.y - topRight.y ) * scale);
         }
         
         
@@ -66,18 +69,33 @@ $(function () {
             map: map,
             title: 'Lot132020'
         });
+
+        // Popup Template
         markerLot132020.tooltipContent = contentString;
-        
-        markerLot132020.addListener('mouseover', function() {
-            var $this = this;
-            var point = fromLatLngToPoint( markerLot132020.getPosition(), map );
-            var tooltipConstructor = $markerTooltip.html(  )
-            console.log(point);
-            $('#marker-tooltip').html( $this.tooltipContent + 'Pixel coordinates: ' + point.x + ', ' + point.y)
-                .css({
-                    'left': point.x,
+
+        /**
+         * Show Tooltip when mouseover pin
+         * Receives function fromLatLngToPoint - returns lat, lng
+         */
+        markerLot132020.addListener( 'mouseover', function () {
+            var tooltipConstructor, point, $this = this;
+            
+            // call fromLatLngToPoint to get lat, lng
+            point = fromLatLngToPoint( markerLot132020.getPosition(), map );
+            // hold Tooltip template
+            tooltipConstructor = $markerTooltip.html( $this.tooltipContent + 'X Coordinates: ' + point.x + ', <br>Y Coordinates: ' + point.y );
+
+            if ( point.x <= 1590 ) {
+                tooltipConstructor.css({
+                    'left': ( point.x + 100),
                     'top': point.y
                 }).show();
+            } else if ( point.x > 1591 ) {
+                tooltipConstructor.css({
+                    'left': ( point.x - 600),
+                    'top': point.y
+                }).show();
+            }
         });
 
         markerLot132020.addListener('mouseout', () => {
