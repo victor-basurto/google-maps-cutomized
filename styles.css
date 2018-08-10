@@ -10,10 +10,11 @@ header, footer { display: none; }
 #imageurl { width: 800px; }
 #map-canvas { height: 800px; }
 
-#map div div div:last-child div:last-child div div div:nth-child(3) {
-    left: 0 !important;
-    top: 30px !important;
-    border-top-width: 24px;
-    position: absolute;
-    transform: rotate(90deg);
-  }
+#marker-tooltip {
+    display: none;
+    position:absolute;
+    width: 300px;
+    height: 500px;
+    background-color: #ccc;
+    margin: 15px;
+}
