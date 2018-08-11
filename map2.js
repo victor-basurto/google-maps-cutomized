@@ -84,6 +84,26 @@ $(function () {
             point = fromLatLngToPoint( markerLot132020.getPosition(), map );
             // hold Tooltip template
             tooltipConstructor = $markerTooltip.html( $this.tooltipContent + 'X Coordinates: ' + point.x + ', <br>Y Coordinates: ' + point.y );
+            console.log($(window).width())
+            if ( point.x <= 1590 ) {
+                tooltipConstructor.css({
+                    'left': ( point.x + 100),
+                    'top': point.y
+                }).show();
+            } else if ( point.x > 1591 ) {
+                tooltipConstructor.css({
+                    'left': ( point.x - 600),
+                    'top': point.y
+                }).show();
+            }
+        });
+        markerLot132020.addListener( 'click', function () {
+            var tooltipConstructor, point, $this = this;
+            
+            // call fromLatLngToPoint to get lat, lng
+            point = fromLatLngToPoint( markerLot132020.getPosition(), map );
+            // hold Tooltip template
+            tooltipConstructor = $markerTooltip.html( $this.tooltipContent + 'X Coordinates: ' + point.x + ', <br>Y Coordinates: ' + point.y );
 
             if ( point.x <= 1590 ) {
                 tooltipConstructor.css({
