@@ -50,6 +50,7 @@ $(function () {
             </div>
         `;
 
+
         function fromLatLngToPoint(latLng, map) {
 
             var topRight, bottomLeft, scale, worldPoint;
@@ -61,6 +62,10 @@ $(function () {
             return new google.maps.Point(( (worldPoint.x - bottomLeft.x) ) * scale, ( worldPoint.y - topRight.y ) * scale);
         }
         
+        function isHidden( el ) {
+            let style = window.getComputedStyle( el );
+            return ( style.display === 'none' );
+        }
         
         var markers = [];
         var Lot132020center = new google.maps.LatLng(45.4969911971779, -122.910992406179);
@@ -69,7 +74,6 @@ $(function () {
             map: map,
             title: 'Lot132020'
         });
-
         // Popup Template
         markerLot132020.tooltipContent = contentString;
 
@@ -77,50 +81,55 @@ $(function () {
          * Show Tooltip when mouseover pin
          * Receives function fromLatLngToPoint - returns lat, lng
          */
-        markerLot132020.addListener( 'mouseover', function () {
-            var tooltipConstructor, point, $this = this;
+        markerLot132020.addListener( 'mouseover', event => {
+            let tooltipConstructor, point, $this = this;
+
+            const width = 800;
+            const height = 800;
+            const offsetX = 140;
+            const offsetY = 140;
+
+            const middleX = (width / 2) + offsetX;
+            const middleY = (height / 2) + offsetY;
             
             // call fromLatLngToPoint to get lat, lng
             point = fromLatLngToPoint( markerLot132020.getPosition(), map );
             // hold Tooltip template
-            tooltipConstructor = $markerTooltip.html( $this.tooltipContent + 'X Coordinates: ' + point.x + ', <br>Y Coordinates: ' + point.y );
-            console.log($(window).width())
-            if ( point.x <= 1590 ) {
+            tooltipConstructor = $markerTooltip.html( 
+                $this.tooltipContent + 'X Coordinates: ' + point.x + ', <br>Y Coordinates: ' + point.y 
+            );
+
+            if ( point.x < middleX ) { // tooltip on right
+                console.log('-x activated')
                 tooltipConstructor.css({
-                    'left': ( point.x + 100),
-                    'top': point.y
+                    'right': point.x
                 }).show();
-            } else if ( point.x > 1591 ) {
+            } else { // tooltip on the left
+                console.log('+x activated')
                 tooltipConstructor.css({
-                    'left': ( point.x - 600),
-                    'top': point.y
+                    'left': 80
                 }).show();
             }
-        });
-        markerLot132020.addListener( 'click', function () {
-            var tooltipConstructor, point, $this = this;
-            
-            // call fromLatLngToPoint to get lat, lng
-            point = fromLatLngToPoint( markerLot132020.getPosition(), map );
-            // hold Tooltip template
-            tooltipConstructor = $markerTooltip.html( $this.tooltipContent + 'X Coordinates: ' + point.x + ', <br>Y Coordinates: ' + point.y );
 
-            if ( point.x <= 1590 ) {
+            if ( point.y > middleY ) {
+                console.log('-y activated');
                 tooltipConstructor.css({
-                    'left': ( point.x + 100),
-                    'top': point.y
+                    'bottom': point.y 
                 }).show();
-            } else if ( point.x > 1591 ) {
+            } else {
+                console.log('+y activated');
                 tooltipConstructor.css({
-                    'left': ( point.x - 600),
-                    'top': point.y
+                    'top': point.y 
                 }).show();
             }
+
+
         });
 
-        markerLot132020.addListener('mouseout', () => {
-            $('#marker-tooltip').hide();
-        })
+        markerLot132020.addListener( 'mouseout', () => {
+            if ( $markerTooltip.is( ':visible' ) )
+                $markerTooltip.hide();
+        });
         markers.push(markerLot132020);
         var Lot132020coords0 = [
             { lat: 45.4960026105087, lng: -122.90787883785123 },
