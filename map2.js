@@ -33,34 +33,6 @@ $(function () {
 
         
 
-        // Sample Content
-        var contentString = `
-            <div id="content">
-                <div id="site-notice"></div>
-                <h1 id="first-heading" class="first-h">Uluru</h1>
-                <div id="body-content">
-                    <p>
-                        <b>Uluru</b>, also referred to as
-                        <b>Ayers Rock</b>, is a large Heritage Site. Attribution: Uluru,
-                        <a href="https://en.wikipedia.org/w/index.php?title=Uluru&oldid=297882194">
-                            https://en.wikipedia.org/w/index.php?title=Uluru</a>
-                        (last visited June 22, 2009).
-                    </p>
-                </div>
-            </div>
-        `;
-
-
-        function fromLatLngToPoint(latLng, map) {
-
-            var topRight, bottomLeft, scale, worldPoint;
-
-            topRight = map.getProjection().fromLatLngToPoint( map.getBounds().getNorthEast() );
-            bottomLeft = map.getProjection().fromLatLngToPoint( map.getBounds().getSouthWest() );
-            scale = Math.pow( 2, map.getZoom() );
-            worldPoint = map.getProjection().fromLatLngToPoint( latLng );
-            return new google.maps.Point(( (worldPoint.x - bottomLeft.x) ) * scale, ( worldPoint.y - topRight.y ) * scale);
-        }
         
         var markers = [];
         var Lot132020center = new google.maps.LatLng(45.4969911971779, -122.910992406179);
@@ -69,65 +41,7 @@ $(function () {
             map: map,
             title: 'Lot132020'
         });
-        // Popup Template
-        markerLot132020.tooltipContent = contentString;
-
-        /**
-         * Show Tooltip when mouseover pin
-         * Receives function fromLatLngToPoint - returns lat, lng
-         */
-        markerLot132020.addListener( 'mouseover', function () {
-            let tooltipConstructor, point;
-
-            const width = 800;
-            const height = 800;
-            const offsetX = 0;
-            const offsetY = 140;
-
-            const middleX = (width / 2) + offsetX;
-            const middleY = (height / 2) + offsetY;
-            
-            // call fromLatLngToPoint to get lat, lng
-            point = fromLatLngToPoint( markerLot132020.getPosition(), map );
-            // hold Tooltip template
-            tooltipConstructor = $markerTooltip.html( 
-                this.tooltipContent + 'X Coordinates: ' + point.x + ', <br>Y Coordinates: ' + point.y + '\n' + event
-            );
-            console.log('-------------------------');
-            console.log( 'middleX: ' + middleX );
-            console.log( 'middleY: ' + middleY );
-            console.log( 'x: ' + point.x )
-            console.log( 'y: ' + point.y )
-
-            if ( point.x < middleX ) { // tooltip on right
-                console.log('-x activated')
-                tooltipConstructor.css({
-                    'left': ( point.x + middleX + 200 )
-                }).show();
-            } else { // tooltip on the left
-                console.log('+x activated')
-                tooltipConstructor.css({
-                    'left': ( point.x + 150 )
-                }).show();
-            }
-
-            if ( point.y > middleX ) {
-                console.log('-y activated');
-                tooltipConstructor.css({
-                    'top': ( point.y - 200 )
-                }).show();
-            } else {
-                console.log('+y activated');
-                tooltipConstructor.css({
-                    'top': ( point.y + 150 )
-                }).show();
-            }
-        });
-
-        markerLot132020.addListener( 'mouseout', () => {
-            if ( $markerTooltip.is( ':visible' ) )
-                $markerTooltip.hide();
-        });
+        
         markers.push(markerLot132020);
         var Lot132020coords0 = [
             { lat: 45.4960026105087, lng: -122.90787883785123 },
@@ -15131,18 +15045,103 @@ $(function () {
         Section132008shape.setMap(map);
         var markerCluster = new MarkerClusterer(map, markers, { imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m' });
         
+        
+        // Sample Content
+        var contentString = `
+            <div id="content">
+                <div id="site-notice"></div>
+                <h1 id="first-heading" class="first-h">Uluru</h1>
+                <div id="body-content">
+                    <p>
+                        <b>Uluru</b>, also referred to as
+                        <b>Ayers Rock</b>, is a large Heritage Site. Attribution: Uluru,
+                        <a href="https://en.wikipedia.org/w/index.php?title=Uluru&oldid=297882194">
+                            https://en.wikipedia.org/w/index.php?title=Uluru</a>
+                        (last visited June 22, 2009).
+                    </p>
+                </div>
+            </div>
+        `;
 
 
+        function fromLatLngToPoint(latLng, map) {
+
+            var topRight, bottomLeft, scale, worldPoint;
+
+            topRight = map.getProjection().fromLatLngToPoint( map.getBounds().getNorthEast() );
+            bottomLeft = map.getProjection().fromLatLngToPoint( map.getBounds().getSouthWest() );
+            scale = Math.pow( 2, map.getZoom() );
+            worldPoint = map.getProjection().fromLatLngToPoint( latLng );
+            return new google.maps.Point(( (worldPoint.x - bottomLeft.x) ) * scale, ( worldPoint.y - topRight.y ) * scale);
+        }
 
 
+        
 
         // Add temporary infowindow to each marker
-        // markers.forEach( i => {
-        //     i.addListener('mouseover', () => {
-        //         console.log(i)
-        //         infowindow.open(map, i)
-        //     });
-        // });
+        markers.forEach( marker => {
+
+
+            // Popup Template
+            marker.tooltipContent = contentString;
+
+            /**
+             * Show Tooltip when mouseover pin
+             * Receives function fromLatLngToPoint - returns lat, lng
+             */
+            marker.addListener( 'mouseover', function () {
+                let tooltipConstructor, point;
+
+                const width = 800;
+                const height = 800;
+                const offsetX = 0;
+                const offsetY = 140;
+
+                const middleX = (width / 2) + offsetX;
+                const middleY = (height / 2) + offsetY;
+                
+                // call fromLatLngToPoint to get lat, lng
+                point = fromLatLngToPoint( marker.getPosition(), map );
+                // hold Tooltip template
+                tooltipConstructor = $markerTooltip.html( 
+                    this.tooltipContent + 'X Coordinates: ' + point.x + ', <br>Y Coordinates: ' + point.y + '\n' + event
+                );
+                console.log('-------------------------');
+                console.log( 'middleX: ' + middleX );
+                console.log( 'middleY: ' + middleY );
+                console.log( 'x: ' + point.x )
+                console.log( 'y: ' + point.y )
+
+                if ( point.x < middleX ) { // tooltip on right
+                    console.log('-x activated')
+                    tooltipConstructor.css({
+                        'left': ( point.x + middleX + 200 )
+                    }).show();
+                } else { // tooltip on the left
+                    console.log('+x activated')
+                    tooltipConstructor.css({
+                        'left': ( point.x + 150 )
+                    }).show();
+                }
+
+                if ( point.y > middleX ) {
+                    console.log('-y activated');
+                    tooltipConstructor.css({
+                        'top': ( point.y - 200 )
+                    }).show();
+                } else {
+                    console.log('+y activated');
+                    tooltipConstructor.css({
+                        'top': ( point.y + 150 )
+                    }).show();
+                }
+            });
+
+            marker.addListener( 'mouseout', () => {
+                if ( $markerTooltip.is( ':visible' ) )
+                    $markerTooltip.hide();
+            });
+        });
     }
 
 
