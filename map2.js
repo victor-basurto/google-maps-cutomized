@@ -62,11 +62,6 @@ $(function () {
             return new google.maps.Point(( (worldPoint.x - bottomLeft.x) ) * scale, ( worldPoint.y - topRight.y ) * scale);
         }
         
-        function isHidden( el ) {
-            let style = window.getComputedStyle( el );
-            return ( style.display === 'none' );
-        }
-        
         var markers = [];
         var Lot132020center = new google.maps.LatLng(45.4969911971779, -122.910992406179);
         var markerLot132020 = new google.maps.Marker({
@@ -81,12 +76,12 @@ $(function () {
          * Show Tooltip when mouseover pin
          * Receives function fromLatLngToPoint - returns lat, lng
          */
-        markerLot132020.addListener( 'mouseover', event => {
-            let tooltipConstructor, point, $this = this;
+        markerLot132020.addListener( 'mouseover', function () {
+            let tooltipConstructor, point;
 
             const width = 800;
             const height = 800;
-            const offsetX = 140;
+            const offsetX = 0;
             const offsetY = 140;
 
             const middleX = (width / 2) + offsetX;
@@ -96,34 +91,37 @@ $(function () {
             point = fromLatLngToPoint( markerLot132020.getPosition(), map );
             // hold Tooltip template
             tooltipConstructor = $markerTooltip.html( 
-                $this.tooltipContent + 'X Coordinates: ' + point.x + ', <br>Y Coordinates: ' + point.y 
+                this.tooltipContent + 'X Coordinates: ' + point.x + ', <br>Y Coordinates: ' + point.y + '\n' + event
             );
+            console.log('-------------------------');
+            console.log( 'middleX: ' + middleX );
+            console.log( 'middleY: ' + middleY );
+            console.log( 'x: ' + point.x )
+            console.log( 'y: ' + point.y )
 
             if ( point.x < middleX ) { // tooltip on right
                 console.log('-x activated')
                 tooltipConstructor.css({
-                    'right': point.x
+                    'left': ( point.x + middleX + 200 )
                 }).show();
             } else { // tooltip on the left
                 console.log('+x activated')
                 tooltipConstructor.css({
-                    'left': 80
+                    'left': ( point.x + 150 )
                 }).show();
             }
 
-            if ( point.y > middleY ) {
+            if ( point.y > middleX ) {
                 console.log('-y activated');
                 tooltipConstructor.css({
-                    'bottom': point.y 
+                    'top': ( point.y - 200 )
                 }).show();
             } else {
                 console.log('+y activated');
                 tooltipConstructor.css({
-                    'top': point.y 
+                    'top': ( point.y + 150 )
                 }).show();
             }
-
-
         });
 
         markerLot132020.addListener( 'mouseout', () => {
