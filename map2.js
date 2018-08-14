@@ -1,6 +1,7 @@
 $(function () {
     var $markerTooltip = $( '#marker-tooltip' );
     function initialize() {
+        var markers = [];
         var centerlat = parseFloat($('input#centerlat').val());
         var centerlng = parseFloat($('input#centerlng').val());
 
@@ -27,21 +28,13 @@ $(function () {
             $('input#centerlat').val(center.lat());
             $('input#centerlng').val(center.lng());
         });
-
-
-
-
         
-
-        
-        var markers = [];
         var Lot132020center = new google.maps.LatLng(45.4969911971779, -122.910992406179);
         var markerLot132020 = new google.maps.Marker({
             position: Lot132020center,
             map: map,
             title: 'Lot132020'
-        });
-        
+        }); 
         markers.push(markerLot132020);
         var Lot132020coords0 = [
             { lat: 45.4960026105087, lng: -122.90787883785123 },
@@ -15063,9 +15056,7 @@ $(function () {
             </div>
         `;
 
-
         function fromLatLngToPoint(latLng, map) {
-
             var topRight, bottomLeft, scale, worldPoint;
 
             topRight = map.getProjection().fromLatLngToPoint( map.getBounds().getNorthEast() );
@@ -15075,30 +15066,24 @@ $(function () {
             return new google.maps.Point(( (worldPoint.x - bottomLeft.x) ) * scale, ( worldPoint.y - topRight.y ) * scale);
         }
 
-
-        
-
         // Add temporary infowindow to each marker
-        markers.forEach( marker => {
-
-
+        markers.forEach( function (marker) {
             // Popup Template
             marker.tooltipContent = contentString;
-
             /**
              * Show Tooltip when mouseover pin
              * Receives function fromLatLngToPoint - returns lat, lng
              */
             marker.addListener( 'mouseover', function () {
                 let tooltipConstructor, point;
-
                 const width = 800;
                 const height = 800;
                 const offsetX = 0;
-                const offsetY = 140;
+                const offsetY = $( '.content-div' ).height();
 
                 const middleX = (width / 2) + offsetX;
                 const middleY = (height / 2) + offsetY;
+
                 
                 // call fromLatLngToPoint to get lat, lng
                 point = fromLatLngToPoint( marker.getPosition(), map );
@@ -15107,48 +15092,51 @@ $(function () {
                     this.tooltipContent + 'X Coordinates: ' + point.x + ', <br>Y Coordinates: ' + point.y + '\n' + event
                 );
                 console.log('-------------------------');
+                console.log('offsetY' + offsetY)
                 console.log( 'middleX: ' + middleX );
                 console.log( 'middleY: ' + middleY );
                 console.log( 'x: ' + point.x )
                 console.log( 'y: ' + point.y )
 
+                console.log('---passing---')
+
+                
                 if ( point.x < middleX ) { // tooltip on right
                     console.log('-x activated')
+                    console.log('to -x: ' + ( point.x + middleX + 50 ))
                     tooltipConstructor.css({
-                        'left': ( point.x + middleX + 200 )
+                        'left': ( point.x + middleX + 50 )
                     }).show();
                 } else { // tooltip on the left
                     console.log('+x activated')
+                    console.log( 'to +x: ' + (point.x + 100) )
                     tooltipConstructor.css({
-                        'left': ( point.x + 150 )
+                        'left': ( point.x + 100 )
                     }).show();
                 }
-
-                if ( point.y > middleX ) {
+                
+                if ( point.y > middleY ) {
                     console.log('-y activated');
-                    tooltipConstructor.css({
-                        'top': ( point.y - 200 )
-                    }).show();
+                    console.log('to -y: '+ ( point.y - 170 ))
+                    tooltipConstructor.css({ 'top': ( point.y - 170 ) }).show();
                 } else {
                     console.log('+y activated');
-                    tooltipConstructor.css({
-                        'top': ( point.y + 150 )
-                    }).show();
+                    console.log( 'to +y: ' + (point.y + 120) )
+                    tooltipConstructor.css({ 'top': ( point.y + 120 ) }).show();
                 }
+                console.log('-----> end')
             });
-
-            marker.addListener( 'mouseout', () => {
+            marker.addListener( 'click', function () {
+                console.log('item clicked');
+            });
+            // when mouse out, remove tooltip
+            marker.addListener( 'mouseout', function () {
                 if ( $markerTooltip.is( ':visible' ) )
                     $markerTooltip.hide();
             });
         });
     }
-
-
     $('button#starteditor').click(function () {
         initialize();
     });
-
 });
-
-
