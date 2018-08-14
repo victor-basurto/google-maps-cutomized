@@ -14,15 +14,17 @@
 <body>
     <div class="content-div">
 		<p>Map Starting Center:</p>
-		<p>Lat:
-			<input id="centerlat" name="centerlatlng" type="text" value="45.4897880564131" placeholder="Lat/Lng Map Center"> Lng:
-			<input id="centerlng" name="centerlng" type="text" value="-122.894888066568" placeholder="Lat/Lng Map Center">
+        <p>
+            Lat: <input id="centerlat" name="centerlatlng" type="text" value="45.4897880564131" placeholder="Lat/Lng Map Center"> 
+            Lng: <input id="centerlng" name="centerlng" type="text" value="-122.894888066568" placeholder="Lat/Lng Map Center">
 		</p>
 		<p>
 			<button id="starteditor">Start</button>
 		</p>
-	</div>
-    <div id="map-canvas"></div>
-    <div id="marker-tooltip"></div>
+    </div>
+    <div id="map-content">
+        <div id="marker-tooltip"></div>
+        <div id="map-canvas"></div>
+    </div>
 </body>
 </html>
