@@ -15091,10 +15091,11 @@ $(function () {
              */
 
             marker.addListener( 'mouseover', function () {
-                var point, boxSize, paddingFromPoint, middleX, middleY;
+                var point, boxSize, paddingFromPoint, middleX, middleY, buffer;
 
                 boxSize = 210;
                 paddingFromPoint = 30;
+                buffer = boxSize / 2;
                 middleX = canvas.width() / 2;
                 middleY = canvas.height() / 2;
                 
@@ -15103,26 +15104,32 @@ $(function () {
                 // create tooltip
                 $( tooltipContainer ).html( this.tooltipContent ); // 'X Coordinates: ' + point.x + ', <br>Y Coordinates: ' + point.y
 
-                if ( point.x < middleX ) { 
-                    // display on right
+                if ( point.x < middleX ) {
+                    // display on left
                     $( tooltipContainer ).css({
                         left: ( point.x + paddingFromPoint )
                     });
                 } else {
                     // display on left
                     $( tooltipContainer ).css({
-                        left: ( point.x - paddingFromPoint - boxSize )
+                        left: ( point.x - boxSize - paddingFromPoint  )
                     });
                 }
-                if ( point.y < middleY ) {
+                
+                if ( point.y < buffer + paddingFromPoint) {
                     // display on bottom
                     $( tooltipContainer ).css({
-                        top: ( point.y - paddingFromPoint )
+                        top: point.y 
+                    });
+                } else if ( point.y > ( canvas.height() - buffer - paddingFromPoint )  ) {
+                    // display on top
+                    $( tooltipContainer ).css({
+                        top: ( point.y  - boxSize - paddingFromPoint - 20 )
                     });
                 } else {
                     // display on top
                     $( tooltipContainer ).css({
-                        top: ( point.y - paddingFromPoint  - boxSize - 40 )
+                        top: point.y - buffer - paddingFromPoint
                     });
                 }
                 $( tooltipContainer ).show();  // show tooltip
