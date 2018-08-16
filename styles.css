@@ -20,7 +20,13 @@ header, footer { display: none; }
     background-repeat: no-repeat;
     background-position: center;
 }
-#map-content, #map-canvas {
+/* #map-content, #map-canvas {
+    width: 800px;
+    height: 800px;
+    position: relative;
+    margin: auto;
+} */
+#map-canvas {
     width: 800px;
     height: 800px;
     position: relative;

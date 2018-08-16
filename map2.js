@@ -1,13 +1,11 @@
 $(function () {
-    var $markerTooltip = $( '#marker-tooltip' ),
-        $wrapper = $( '#map-content' ),
-        $startEditorBtn = $( 'button#starteditor' ),
+    var $startEditorBtn = $( 'button#starteditor' ),
         $centerLat = $('input#centerlat'),
-        $centerLng = $('input#centerlng');
+        $centerLng = $('input#centerlng'),
+        canvas, tooltipContainer;
     function initialize() {
         var centerlat, centerlng, mapOptions;
-        var markers = [];
-        
+        var markers = []; 
         centerlat = parseFloat( $centerLat.val() );        
         centerlng = parseFloat( $centerLng.val() );
         mapOptions = {
@@ -32,6 +30,15 @@ $(function () {
             var center = map.getCenter();
             $('input#centerlat').val(center.lat());
             $('input#centerlng').val(center.lng());
+        });
+
+        /**
+         * Add tooltip once map is loaded [Mandatory]
+         */
+        google.maps.event.addListenerOnce( map, 'tilesloaded', function () {
+            canvas =$("#map-canvas").find(".gm-style");
+            canvas.append( '<div id="marker-tooltip"></div>' );
+            tooltipContainer = $( '#marker-tooltip' );
         });
         
         var Lot132020center = new google.maps.LatLng(45.4969911971779, -122.910992406179);
@@ -15073,7 +15080,7 @@ $(function () {
             worldPoint = map.getProjection().fromLatLngToPoint( latLng );
             return new google.maps.Point(( (worldPoint.x - bottomLeft.x) ) * scale, ( worldPoint.y - topRight.y ) * scale);
         }
-
+        
         // Add temporary infowindow to each marker
         markers.forEach( function (marker) {
             // Popup Template
@@ -15082,41 +15089,43 @@ $(function () {
              * Show Tooltip when mouseover pin
              * Receives function fromLatLngToPoint - returns lat, lng
              */
+
             marker.addListener( 'mouseover', function () {
                 var point, boxSize, paddingFromPoint, middleX, middleY;
 
                 boxSize = 210;
                 paddingFromPoint = 30;
-                middleX = ( $wrapper.width() / 2 );
-                middleY = ( $wrapper.height() / 2 );
+                middleX = canvas.width() / 2;
+                middleY = canvas.height() / 2;
+                
                 point = fromLatLngToPoint( marker.getPosition(), map );
 
                 // create tooltip
-                $markerTooltip.html( this.tooltipContent ); // 'X Coordinates: ' + point.x + ', <br>Y Coordinates: ' + point.y
+                $( tooltipContainer ).html( this.tooltipContent ); // 'X Coordinates: ' + point.x + ', <br>Y Coordinates: ' + point.y
 
                 if ( point.x < middleX ) { 
                     // display on right
-                    $markerTooltip.css({
+                    $( tooltipContainer ).css({
                         left: ( point.x + paddingFromPoint )
                     });
                 } else {
                     // display on left
-                    $markerTooltip.css({
+                    $( tooltipContainer ).css({
                         left: ( point.x - paddingFromPoint - boxSize )
                     });
                 }
                 if ( point.y < middleY ) {
                     // display on bottom
-                    $markerTooltip.css({
+                    $( tooltipContainer ).css({
                         top: ( point.y - paddingFromPoint )
                     });
                 } else {
                     // display on top
-                    $markerTooltip.css({
+                    $( tooltipContainer ).css({
                         top: ( point.y - paddingFromPoint  - boxSize - 40 )
                     });
                 }
-                $markerTooltip.show();  // show tooltip
+                $( tooltipContainer ).show();  // show tooltip
             });
             /**
              * TODO:
@@ -15132,8 +15141,8 @@ $(function () {
              * Remove tooltip
              */
             marker.addListener( 'mouseout', function () {
-                if ( $markerTooltip.is( ':visible' ) )
-                    $markerTooltip.hide();
+                if ( $( tooltipContainer ).is( ':visible' ) )
+                    $( tooltipContainer ).hide();
             });
         });
     }
