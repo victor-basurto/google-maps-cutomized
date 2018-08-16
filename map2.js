@@ -1,13 +1,16 @@
 $(function () {
-    var $markerTooltip = $( '#marker-tooltip' );
-    var $wrapper = $( '#map-content' );
-    var $startEditorBtn = $( 'button#starteditor' );
+    var $markerTooltip = $( '#marker-tooltip' ),
+        $wrapper = $( '#map-content' ),
+        $startEditorBtn = $( 'button#starteditor' ),
+        $centerLat = $('input#centerlat'),
+        $centerLng = $('input#centerlng');
     function initialize() {
+        var centerlat, centerlng, mapOptions;
         var markers = [];
-        var centerlat = parseFloat($('input#centerlat').val());
-        var centerlng = parseFloat($('input#centerlng').val());
-
-        var mapOptions = {
+        
+        centerlat = parseFloat( $centerLat.val() );        
+        centerlng = parseFloat( $centerLng.val() );
+        mapOptions = {
             zoom: 16,
             center: new google.maps.LatLng(centerlat, centerlng),
             mapTypeId: google.maps.MapTypeId.ROADMAP,
@@ -15043,17 +15046,20 @@ $(function () {
         
         // Sample Content
         var contentString = `
-            <div id="content">
-                <div id="site-notice"></div>
-                <h1 id="first-heading" class="first-h">Uluru</h1>
-                <div id="body-content">
-                    <p>
-                        <b>Uluru</b>, also referred to as
-                        <b>Ayers Rock</b>, is a large Heritage Site. Attribution: Uluru,
-                        <a href="https://en.wikipedia.org/w/index.php?title=Uluru&oldid=297882194">
-                            https://en.wikipedia.org/w/index.php?title=Uluru</a>
-                        (last visited June 22, 2009).
-                    </p>
+            <div class="tooltip-content">
+                <div class="tooltip-content-img bg-img" style="background-image: url('./homefinder/sw-test.jpg'); height: 160px; width: 100%;"></div>
+                <div class="body-content">
+                    <div class="price-holder bm"><span id="price">$540,000</span></div>
+                    <div class="icons-data">
+                        <ul class="list-inline">
+                            <li>Bed</li>
+                            <li>Rest</li>
+                            <li>1408 sqft</li>
+                        </ul>
+                    </div>
+                    <div class="address-content">
+                        857 2nd Ave
+                    </div>
                 </div>
             </div>
         `;
@@ -15078,17 +15084,15 @@ $(function () {
              */
             marker.addListener( 'mouseover', function () {
                 var point, boxSize, paddingFromPoint, middleX, middleY;
-                
-                boxSize = 300;
+
+                boxSize = 210;
                 paddingFromPoint = 30;
                 middleX = ( $wrapper.width() / 2 );
                 middleY = ( $wrapper.height() / 2 );
                 point = fromLatLngToPoint( marker.getPosition(), map );
 
                 // create tooltip
-                $markerTooltip.html( 
-                    this.tooltipContent + 'X Coordinates: ' + point.x + ', <br>Y Coordinates: ' + point.y + '\n' + event
-                );
+                $markerTooltip.html( this.tooltipContent ); // 'X Coordinates: ' + point.x + ', <br>Y Coordinates: ' + point.y
 
                 if ( point.x < middleX ) { 
                     // display on right
@@ -15104,12 +15108,12 @@ $(function () {
                 if ( point.y < middleY ) {
                     // display on bottom
                     $markerTooltip.css({
-                        top: ( point.y + paddingFromPoint )
+                        top: ( point.y - paddingFromPoint )
                     });
                 } else {
                     // display on top
                     $markerTooltip.css({
-                        top: ( point.y - paddingFromPoint  - boxSize )
+                        top: ( point.y - paddingFromPoint  - boxSize - 40 )
                     });
                 }
                 $markerTooltip.show();  // show tooltip
